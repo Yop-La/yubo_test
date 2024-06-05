@@ -88,6 +88,37 @@ async def increment_live_view_counter(profile_id: int, session_id: str):
     await redis.expire(key, timedelta(hours=1))
     print(f"Incremented live view counter for key: {key}")
 
+@app.get("/profiles/{profileId}/views/all-time")
+async def get_all_time_views(profileId: int):
+    try:
+        async with db_pool.acquire() as connection:
+            result = await connection.fetchrow('''
+                SELECT all_time_views FROM profiles WHERE profile_id = $1
+            ''', profileId)
+            if result is None:
+                raise HTTPException(status_code=404, detail="Profile not found")
+            return {"profile_id": profileId, "all_time_views": result['all_time_views']}
+    except Exception as e:
+        print(f"Error retrieving all-time views: {e}")
+        raise HTTPException(status_code=500, detail="Error retrieving all-time views")
+
+
+@app.get("/profiles/{profileId}/viewers")
+async def get_viewers(profileId: int):
+    try:
+        async with db_pool.acquire() as connection:
+            result = await connection.fetch('''
+                SELECT DISTINCT viewer_profile_id 
+                FROM profile_views 
+                WHERE viewed_profile_id = $1
+            ''', profileId)
+            if not result:
+                raise HTTPException(status_code=404, detail="Profile not found or no viewers")
+            viewers = [record['viewer_profile_id'] for record in result]
+            return {"profile_id": profileId, "viewers": viewers}
+    except Exception as e:
+        print(f"Error retrieving viewers: {e}")
+        raise HTTPException(status_code=500, detail="Error retrieving viewers")
 
 
 async def add_profile_view(view: ProfileView):

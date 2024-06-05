@@ -54,3 +54,14 @@ To get the total number of views of a live  in real-time
 ```bash
 curl -X GET "http://localhost:8000/profiles/1/views/live?sessionId=sess123"
 ```
+
+This command retrieves the cumulative number of views for profile ID 1.
+```bash
+curl -X GET "http://localhost:8000/profiles/1/views/all-time"
+```
+
+This command retrieves all profiles that viewed the profile with ID 1.
+
+```bash
+curl -X GET "http://localhost:8000/profiles/1/viewers"
+```
