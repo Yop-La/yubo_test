@@ -10,7 +10,10 @@ The project currently includes the following components:
 4. **Python Server**: Hosts an API with two routes:
     - `GET /`: Returns "hello".
     - `POST /views`: Sends views to kafka topic named `live_views`. Then the view is consumed and persisted in PostgreSQL and Redis ( only a counter of the number of total views is updated )
-    - `GET /profiles/{profileId}/views/live`: to get the number of views of a profile generated during a live 
+    - `GET /profiles/{profileId}/views/live`: to get the number of views of a profile generated during a live
+    - `GET /profiles/{profileId}/views/all-time`: Retrieves the cumulative number of views for a specific profile. This query fetches data from PostgreSQL.
+    - `GET /profiles/{profileId}/viewers`: Retrieves all profiles (viewers) that viewed the specific `profileId`. This query fetches data from PostgreSQL.
+
 
 ## Project Setup and Launch
 
